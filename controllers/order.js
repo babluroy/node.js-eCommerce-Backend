@@ -51,6 +51,52 @@ exports.removeFromCart = (req, res) => {
     })
 }
 
+exports.getCartProducts = async (req, res) => {
+    let { pageNumber, limit, sortBy } = req.query;
+    if (!pageNumber) pageNumber = 1;
+    if (!limit || limit > 100) limit = 9;
+    const limit_query = parseInt(limit);
+    const skip = (pageNumber - 1) * limit;
+    sortBy = sortBy ? sortBy : "_id";
+
+    try {
+        const cart = await ProductCart.find()
+            .sort([[sortBy, "desc"]])
+            .skip(skip)
+            .limit(limit_query)
+            .exec();
+        res.status(200).json(cart);
+    } catch (err) {
+        res.status(400).json({
+            log: err,
+            error: "Cart not found"
+        });
+    }
+}
+
+exports.getAllOrders = async (req, res) => {
+    let { pageNumber, limit, sortBy } = req.query;
+    if (!pageNumber) pageNumber = 1;
+    if (!limit || limit > 100) limit = 9;
+    const limit_query = parseInt(limit);
+    const skip = (pageNumber - 1) * limit;
+    sortBy = sortBy ? sortBy : "_id";
+
+    try {
+        const products = await Order.find()
+            .sort([[sortBy, "desc"]])
+            .skip(skip)
+            .limit(limit_query)
+            .exec();
+        res.status(200).json(products);
+    } catch (err) {
+        res.status(400).json({
+            error: "Products not found"
+        });
+    }
+}
+
+
 exports.order = async (req, res) => {
     const { paymentMode } = req.body;
 
@@ -92,6 +138,7 @@ exports.order = async (req, res) => {
         const savedOrder = await orderData.save();
 
         await subtractStock(productIds, productQtys);
+        await this.clearCart(userData.id);
 
         return res.status(200).json({
             data: savedOrder,
@@ -106,3 +153,16 @@ exports.order = async (req, res) => {
     }
 }
 
+
+exports.clearCart = (userId) => {
+    if (!userId) {
+        return false;
+    }
+    ProductCart.deleteMany({ user: userId })
+        .then((result) => {
+            return (true)
+        })
+        .catch((error) => {
+            return (false)
+        });
+};
