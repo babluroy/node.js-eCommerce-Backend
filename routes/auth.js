@@ -5,7 +5,6 @@ const { signup, signin, signout, updateUser } = require('../controllers/auth');
 const { isAuthenticated, isSignedIn, isAdmin } = require('../middlewares/auth');
 const { getUserById } = require('../middlewares/user');
 
-// params
 router.param("userId", getUserById);
 
 router.post('/signup',

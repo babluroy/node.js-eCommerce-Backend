@@ -27,7 +27,6 @@ exports.getUserData = (token) => {
     try {
       const decoded = jwt.verify(extractedToken, secretKey);
       result = decoded;
-      console.log(extractedToken)
       return result;
     } catch (err) {
       result = null;
