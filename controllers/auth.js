@@ -5,7 +5,7 @@ const User = require('../models/user')
 const formidable =  require("formidable");
 const _ = require("lodash");
 const { constants } = require('../constants');
-const { getUserData } = require('../middlewares/auth');
+const { getUserData } = require('../middlewares/user');
 
 exports.signup = (req, res) => {
     const errors = validationResult(req);

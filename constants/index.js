@@ -15,6 +15,13 @@ const constants = {
     PAYMENT_TYPES: {
         COD: 'COD',
         ONLINE: 'ONLINE',
+    },
+    ORDER_STATUS: {
+        CANCELLED: "Cancelled", 
+        DELIVERED: "Delivered", 
+        SHIPPED: "Shipped", 
+        PROCESSING: "Processing", 
+        RECEIVED: "Received"
     }
 }
 

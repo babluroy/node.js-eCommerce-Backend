@@ -16,3 +16,20 @@ exports.isProductExistOnCart = (req, res, next) => {
         })
     })
 }
+
+exports.getOrderId = (req, res, next) => {
+    const orderId = req.params.orderId
+    Order.findById(orderId).then((order) => {
+        if(!order) {
+            return res.status(400).json({
+                error: "Order doesn't exist"
+            })
+        }
+        next();
+    }).catch((err) => {
+        return res.status(503).json({
+            log: err,
+            error: "Unknown Error"
+        })
+    })
+} 

@@ -1,5 +1,5 @@
 const { constants } = require("../constants");
-const { getUserData } = require("../middlewares/auth");
+const { getUserData } = require("../middlewares/user");
 const { ProductCart, Order } = require("../models/order");
 const { checkStock, subtractStock } = require("./product");
 
@@ -74,8 +74,9 @@ exports.getCartProducts = async (req, res) => {
     }
 }
 
-exports.getAllOrders = async (req, res) => {
+exports.getOrdersOfUser = async (req, res) => {
     let { pageNumber, limit, sortBy } = req.query;
+    const userData = await getUserData(req.headers.authorization);
     if (!pageNumber) pageNumber = 1;
     if (!limit || limit > 100) limit = 9;
     const limit_query = parseInt(limit);
@@ -83,7 +84,7 @@ exports.getAllOrders = async (req, res) => {
     sortBy = sortBy ? sortBy : "_id";
 
     try {
-        const products = await Order.find()
+        const products = await Order.find({user: userData.id})
             .sort([[sortBy, "desc"]])
             .skip(skip)
             .limit(limit_query)
@@ -166,3 +167,86 @@ exports.clearCart = (userId) => {
             return (false)
         });
 };
+
+exports.getAllOrders = async (req, res) => {
+    let { pageNumber, limit, sortBy } = req.query;
+    if (!pageNumber) pageNumber = 1;
+    if (!limit || limit > 100) limit = 50;
+    const limit_query = parseInt(limit);
+    const skip = (pageNumber - 1) * limit;
+    sortBy = sortBy ? sortBy : "_id";
+
+    try {
+        const orders = await Order.find()
+            .sort([[sortBy, "desc"]])
+            .skip(skip)
+            .limit(limit_query)
+            .exec();
+        res.status(200).json(orders);
+    } catch (err) {
+        res.status(400).json({
+            error: "Orders not found"
+        });
+    }
+}
+
+exports.updateOrder  = async (req, res) => {
+    const updatedData = req.body;
+    const orderId = req.params.orderId
+
+    try {
+        const order = await Order.findOneAndUpdate(
+            {_id: orderId},
+            {$set: updatedData},
+            {new: true, useFindAndModify: false }
+        )
+        res.status(200).json({
+            data: order,
+            message: "Order Updated"
+        })
+    } catch (error) {
+        res.status(400).json({
+            log: error,
+            error: "Unknown error"
+        });
+    }
+}
+
+exports.cancelOrder = async (req, res) => {
+    const status = {
+        status: constants.ORDER_STATUS.CANCELLED
+    };
+    const orderId = req.params.orderId;
+
+    try {
+        const order = await Order.findById(orderId);
+
+        if (!order) {
+            return res.status(404).json({
+                error: "Order not found"
+            });
+        }
+
+        if (order.status === constants.ORDER_STATUS.DELIVERED) {
+            return res.status(400).json({
+                error: "Order has already been delivered and cannot be cancelled"
+            });
+        }
+
+        const updatedOrder = await Order.findOneAndUpdate(
+            { _id: orderId },
+            { $set: status },
+            { new: true, useFindAndModify: false }
+        );
+
+        res.status(200).json({
+            data: updatedOrder,
+            message: "Order cancelled"
+        });
+    } catch (error) {
+        res.status(400).json({
+            log: error.message,
+            error: "Unknown error"
+        });
+    }
+}
