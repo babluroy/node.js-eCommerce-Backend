@@ -12,6 +12,7 @@ const category = require('./routes/category')
 const common = require('./routes/common')
 const product = require('./routes/product')
 const order = require('./routes/order')
+const payment = require('./routes/payment')
 
 // DB CONNECTION
 mongoose.connect(process.env.DATABASE, {
@@ -31,6 +32,7 @@ app.use('/api/category', category);
 app.use('/api/common', common);
 app.use('/api/product', product);
 app.use('/api/order', order);
+app.use('/api/payment', payment);
 
 const port = process.env.PORT || 2000;
 

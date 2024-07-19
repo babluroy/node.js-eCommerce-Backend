@@ -142,7 +142,7 @@ exports.checkStock = (cartProducts, productQuantities) => {
                 const product = data[i];
                 const requiredQuantity = productQuantities[i];
                 if (product.quantity < requiredQuantity) {
-                    return reject(false);
+                    return resolve(false);
                 }
             }
             resolve(true);

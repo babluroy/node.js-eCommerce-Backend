@@ -98,15 +98,7 @@ exports.getOrdersOfUser = async (req, res) => {
 }
 
 
-exports.order = async (req, res) => {
-    const { paymentMode } = req.body;
-
-    if(!paymentMode) {
-        return res.status(400).json({
-            error: "Payment mode required",
-        });
-    }
-
+exports.codOrder = async (req, res) => {
     try {
         const userData = getUserData(req.headers.authorization);
 
@@ -131,7 +123,7 @@ exports.order = async (req, res) => {
 
         const preparedData = {
             products: cartProducts,
-            paymentMode: paymentMode,
+            paymentMode: constants.PAYMENT_TYPES.COD,
             user: userData.id,
         };
 

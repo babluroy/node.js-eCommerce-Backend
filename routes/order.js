@@ -2,7 +2,7 @@ const express = require('express');
 const router =  express.Router();
 const { check } = require('express-validator');
 const { isSignedIn, isAuthenticated, isAdmin } = require('../middlewares/auth');
-const { addToCart, removeFromCart, order, getCartProducts, getOrdersOfUser, getAllOrders, updateOrder, cancelOrder } = require('../controllers/order');
+const { addToCart, removeFromCart, getCartProducts, getOrdersOfUser, getAllOrders, updateOrder, cancelOrder, codOrder } = require('../controllers/order');
 const { isProductExist } = require('../middlewares/product');
 const { isProductExistOnCart, getOrderId } = require('../middlewares/order');
 const { isBasicUserDetailExists } = require('../middlewares/user');
@@ -22,10 +22,10 @@ router.delete('/remove-from-cart/:cartProductId',
     removeFromCart
 )
 
-router.post('/order', 
+router.post('/cod-order', 
     isSignedIn,
     isBasicUserDetailExists,
-    order
+    codOrder
 )
 
 router.get('/get-orders', 
