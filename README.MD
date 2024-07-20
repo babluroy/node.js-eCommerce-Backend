@@ -50,5 +50,5 @@ RAZORPAY_SECRET=YOUR_RAZORPAY_SECRET
 <br>
 
 ## PROJECT STRUCTURE
-![Screenshot](https://drive.google.com/file/d/1Ig-g8c_-aiUjpRxJ8k6K_9FOPLgAum7F/view?usp=drive_link)
+![Screenshot](https://drive.google.com/file/d/1Ig-g8c_-aiUjpRxJ8k6K_9FOPLgAum7F/view)
 
