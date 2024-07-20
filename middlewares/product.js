@@ -8,6 +8,7 @@ exports.isProductExist = (req, res, next) => {
                 error: "Product doesn't exist"
             })
         }
+        req.product = product;
         next();
     }).catch((err) => {
         return res.status(503).json({

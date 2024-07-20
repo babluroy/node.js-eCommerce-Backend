@@ -4,7 +4,8 @@ const { ProductCart, Order } = require("../models/order");
 const { checkStock, subtractStock } = require("./product");
 
 exports.addToCart = (req, res) => {
-    const { productId, quantity } = req.body;
+    const { productId, quantity, size } = req.body;
+    const product = req?.product;
     const userData = getUserData(req.headers.authorization);
 
     if (!userData) {
@@ -13,16 +14,19 @@ exports.addToCart = (req, res) => {
         })
     }
 
-    if (!productId || !quantity) {
+    if (!productId || !quantity || !size) {
         return res.status(400).json({
-            error: "Product or quantity is missing"
+            error: "Product, quantity or size is missing"
         })
     }
+
+    const getProductDetail = product.sizes.find(item => item.name == size);
 
     const preparedData = {
         product: productId,
         quantity: quantity,
         user: userData?.id,
+        amount: getProductDetail?.price * quantity,
     };
 
     const cartData = new ProductCart(preparedData)

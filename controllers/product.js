@@ -21,7 +21,6 @@ exports.addProduct = (req, res) => {
             error: "Unknown error"
         })
     })
-
 }
 
 exports.updateProduct = (req, res) => {

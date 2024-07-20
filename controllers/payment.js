@@ -24,6 +24,9 @@ exports.createOrder = async (req, res) => {
         });
     }
 
+    const totalProductAmount = cartProducts.reduce((sum, item) => sum + item.amount, 0);
+    const totalAmount = totalProductAmount + constants.EXTRA_CHARGES.DELIVERY;
+
     const productIds = cartProducts.map(item => item.product);
     const productQtys = cartProducts.map(item => item.quantity);
 
@@ -41,7 +44,7 @@ exports.createOrder = async (req, res) => {
             key_secret: process.env.RAZORPAY_SECRET,
         });
 
-        const { amount } = req.body;
+        const  amount = totalAmount;
 
         const paymentPayload = {
             amount: amount

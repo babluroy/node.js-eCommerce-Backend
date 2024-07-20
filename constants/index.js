@@ -22,6 +22,9 @@ const constants = {
         SHIPPED: "Shipped", 
         PROCESSING: "Processing", 
         RECEIVED: "Received"
+    },
+    EXTRA_CHARGES: {
+        DELIVERY: 50
     }
 }
 
