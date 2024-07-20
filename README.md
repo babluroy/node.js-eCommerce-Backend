@@ -24,7 +24,7 @@ Welcome to the eCommerce Backend Server! This Node.js application serves as dyna
 <br>
 
 ## Postman collection
-[Download Collection](https://api.postman.com/collections/36907399-8ef269c3-d42b-4721-9a60-191e4ceae8d3?access_key=PMAT-01J37VK3DANX9731PR78EA37WB)
+[Download Collection](https://drive.google.com/drive/folders/1L6NPZcmM9IeksdEFinlhLcKBT6-c0iVX?usp=sharing)
 
 <br>
 
