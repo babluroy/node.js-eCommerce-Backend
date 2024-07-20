@@ -50,5 +50,5 @@ RAZORPAY_SECRET=YOUR_RAZORPAY_SECRET
 <br>
 
 ## PROJECT STRUCTURE
-![Preview](https://drive.google.com/file/d/1Ig-g8c_-aiUjpRxJ8k6K_9FOPLgAum7F/view?usp=drive_link)
+![Preview](https://github.com/babluroy/node.js-eCommerce-Backend/blob/master/readme-files/E-COMMERCE_BACKEND.png?raw=true)
 
