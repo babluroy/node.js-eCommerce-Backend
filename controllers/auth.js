@@ -7,6 +7,11 @@ const _ = require("lodash");
 const { constants } = require('../constants');
 const { getUserData } = require('../middlewares/user');
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description Handles signup of user
+ */
 exports.signup = (req, res) => {
     const errors = validationResult(req);
     const { email, password } = req.body;
@@ -68,6 +73,11 @@ exports.signup = (req, res) => {
 
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description Handles signin of user
+ */
 exports.signin = (req, res) => {
     const errors = validationResult(req);
     const { email, password } = req.body;
@@ -131,6 +141,11 @@ exports.signin = (req, res) => {
     });
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description Handles sigout of user
+ */
 exports.signout = (req, res) => {
     res.clearCookie("token");
     res.json({
@@ -139,6 +154,11 @@ exports.signout = (req, res) => {
     });
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description updates data of user
+ */
 exports.updateUser = (req, res) => {
     const userId = req.params.userId; 
     const updateData = req.body; 

@@ -2,6 +2,11 @@ const AWS = require('aws-sdk');
 AWS.config.update({ accessKeyId: process.env.AWS_ACCESS_KEY, secretAccessKey: process.env.AWS_SECRET_KEY, region: process.env.AWS_REGION });
 const s3 = new AWS.S3();
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description generates S3 signed url
+ */
 exports.getSignedUrl = async (req, res) => {
     const { bucketName, fileName } = req.body;
     const urlExpiryTime = 600000; // 10 mins
@@ -30,7 +35,11 @@ exports.getSignedUrl = async (req, res) => {
 
 };
 
-
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description deletes images from S3 bucket
+ */
 exports.deleteImagesFromS3 = (images, bucketName) => {
     return new Promise((resolve, reject) => {
 
@@ -55,6 +64,11 @@ exports.deleteImagesFromS3 = (images, bucketName) => {
     })
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description gets image key from S3 url
+ */
 const getS3KeyFromUrl = (url) => {
     const urlParts = url.split('/');
     return urlParts.slice(3).join('/');

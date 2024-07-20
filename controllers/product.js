@@ -5,6 +5,11 @@ const { constants } = require('../constants');
 const Product = require('../models/product');
 const { deleteImagesFromS3 } = require('./common');
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description adds product
+ */
 exports.addProduct = (req, res) => {
     const {title, summary, desc, images, quantity, featured, category, sizes} = req.body;
 
@@ -23,6 +28,11 @@ exports.addProduct = (req, res) => {
     })
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description updates product details
+ */
 exports.updateProduct = (req, res) => {
     const updatedData = req.body;
     const productId = req.params?.productId;
@@ -40,6 +50,11 @@ exports.updateProduct = (req, res) => {
     })
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description deletes product
+ */
 exports.deleteProduct = (req, res) => {
     const productId = req.params?.productId;
     Product.findByIdAndDelete({_id: productId}).then((product) => {
@@ -57,6 +72,13 @@ exports.deleteProduct = (req, res) => {
 
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @param {String} id - id of product
+ * @description retrives a product
+ */
 exports.getProductId = (req, res, next, id) => {
     Product.findById(id).then((product) => {
         if(!product){
@@ -69,6 +91,11 @@ exports.getProductId = (req, res, next, id) => {
     })
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description retriives all products
+ */
 exports.getAllProducts = async (req, res) => {
     let { pageNumber, limit, sortBy, size, category, minPrice, maxPrice, featured } = req.query;
 
@@ -119,6 +146,11 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description returns a product as per product id provided
+ */
 exports.getProduct = (req, res) => {
     const productId = req.params?.productId;
     Product.findById(productId).then((product) => {
@@ -134,6 +166,11 @@ exports.getProduct = (req, res) => {
     })
 }
 
+/**
+ * @param {Array} cartProducts - cart product ids
+ * @param {Array} productQuantities - cart product quantities
+ * @description checks stock of products
+ */
 exports.checkStock = (cartProducts, productQuantities) => {
     return new Promise((resolve, reject) => {
         Product.find({ _id: { $in: cartProducts } }).then((data) => {
@@ -151,7 +188,11 @@ exports.checkStock = (cartProducts, productQuantities) => {
     });
 }
 
-
+/**
+ * @param {Array} productIds - cart product ids
+ * @param {Array} quantities - cart product quantities
+ * @description substract product quantities as per the quantities
+ */
 exports.subtractStock = async (productIds, quantities) => {
     try {
         if (productIds.length !== quantities.length) {

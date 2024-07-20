@@ -7,6 +7,11 @@ const { checkStock, subtractStock } = require("./product");
 const { clearCart } = require("./order");
 const { constants } = require("../constants");
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description creates order on razorpay
+ */
 exports.createOrder = async (req, res) => {
     const userData = getUserData(req.headers.authorization);
 
@@ -70,6 +75,11 @@ exports.createOrder = async (req, res) => {
     }
 }
 
+/**
+ * @param {Object} userData - users data
+ * @param {Object} paymentData - payment data
+ * @description updates payment details
+ */
 exports.updatePaymentDetails = async (userData, paymentData) => {
     const allData = {
         user: userData.id,
@@ -93,6 +103,11 @@ exports.updatePaymentDetails = async (userData, paymentData) => {
     }
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description validate transaction
+ */
 exports.validatePayment = async (req, res) => {
     const userData = getUserData(req.headers.authorization);
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;

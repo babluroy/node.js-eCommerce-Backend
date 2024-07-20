@@ -3,6 +3,11 @@ const { getUserData } = require("../middlewares/user");
 const { ProductCart, Order } = require("../models/order");
 const { checkStock, subtractStock } = require("./product");
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description adds product into cart
+ */
 exports.addToCart = (req, res) => {
     const { productId, quantity, size } = req.body;
     const product = req?.product;
@@ -45,6 +50,11 @@ exports.addToCart = (req, res) => {
 
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description removes product from cart
+ */
 exports.removeFromCart = (req, res) => {
     const cartProductId = req.params.cartProductId;
     ProductCart.findByIdAndDelete(cartProductId).then((product) => {
@@ -55,6 +65,11 @@ exports.removeFromCart = (req, res) => {
     })
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description returns all the cart products of a user
+ */
 exports.getCartProducts = async (req, res) => {
     let { pageNumber, limit, sortBy } = req.query;
     if (!pageNumber) pageNumber = 1;
@@ -78,6 +93,11 @@ exports.getCartProducts = async (req, res) => {
     }
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description gets all orders of user
+ */
 exports.getOrdersOfUser = async (req, res) => {
     let { pageNumber, limit, sortBy } = req.query;
     const userData = await getUserData(req.headers.authorization);
@@ -96,12 +116,16 @@ exports.getOrdersOfUser = async (req, res) => {
         res.status(200).json(products);
     } catch (err) {
         res.status(400).json({
-            error: "Products not found"
+            error: "Orders not found"
         });
     }
 }
 
-
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description executes cash on delivery order
+ */
 exports.codOrder = async (req, res) => {
     try {
         const userData = getUserData(req.headers.authorization);
@@ -150,7 +174,10 @@ exports.codOrder = async (req, res) => {
     }
 }
 
-
+/**
+ * @param {String} userId - Express request object
+ * @description cleares the cart of user
+ */
 exports.clearCart = (userId) => {
     if (!userId) {
         return false;
@@ -164,6 +191,11 @@ exports.clearCart = (userId) => {
         });
 };
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description gets all users orders for admin
+ */
 exports.getAllOrders = async (req, res) => {
     let { pageNumber, limit, sortBy } = req.query;
     if (!pageNumber) pageNumber = 1;
@@ -186,6 +218,11 @@ exports.getAllOrders = async (req, res) => {
     }
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description updates order details for admin
+ */
 exports.updateOrder  = async (req, res) => {
     const updatedData = req.body;
     const orderId = req.params.orderId
@@ -208,6 +245,11 @@ exports.updateOrder  = async (req, res) => {
     }
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description cancels order
+ */
 exports.cancelOrder = async (req, res) => {
     const status = {
         status: constants.ORDER_STATUS.CANCELLED

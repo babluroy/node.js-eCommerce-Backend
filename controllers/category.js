@@ -5,6 +5,11 @@ const { constants } = require('../constants');
 const Category = require('../models/category');
 const { deleteImagesFromS3 } = require('./common');
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description adds category
+ */
 exports.addCategory = (req, res) => {
     const {name, imageUrl} = req.body;
 
@@ -27,6 +32,11 @@ exports.addCategory = (req, res) => {
     })
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description updates category
+ */
 exports.updateCategory = (req, res) => {
     const updatedData = req.body;
     const categoryId = req.params?.categoryId;
@@ -44,6 +54,13 @@ exports.updateCategory = (req, res) => {
     })
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @param {Function} id - product id
+ * @description gets particular category id
+ */
 exports.getCategoryById = (req, res, next, id) => {
     if(!id){
         return res.status(502).json({
@@ -66,7 +83,11 @@ exports.getCategoryById = (req, res, next, id) => {
     })
 }
 
-
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description retrives all the categories
+ */
 exports.getCategories = (req, res) => {
     Category.find().then((error, categories) => {
         if(error) {
@@ -77,11 +98,16 @@ exports.getCategories = (req, res) => {
         }
         return res.status(200).json({
             data: categories,
-            message: "Categories retrivedx"
+            message: "Categories retrieved"
         })
     })
 }
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description deletes cateory
+ */
 exports.deleteCategory = (req, res) => {
     const categoryId = req.params.categoryId;
     Category.findByIdAndDelete({_id: categoryId}).then((category) => {

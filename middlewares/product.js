@@ -1,5 +1,11 @@
 const Product = require('../models/product');
 
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @description checks if passed product id exist
+ */
 exports.isProductExist = (req, res, next) => {
     const productId = req.body?.productId;
     Product.findById(productId).then((product) => {
