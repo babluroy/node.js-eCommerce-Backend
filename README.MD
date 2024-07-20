@@ -35,7 +35,6 @@ Welcome to the eCommerce Backend Server! This Node.js application serves as dyna
 
 1. **Create .env file and paste your DATABASE URL, SECRET, AWS CREDENTIALS & RAZORPAY CREDENTIALS:**
 ```bash
-
 DATABASE=mongodb://localhost:27017/ecommerce
 SECRET=YOUT_SECRET
 
@@ -47,5 +46,9 @@ AWS_REGION=YOUR_AWS_REGION
 # RAZORPAY
 RAZORPAY_KEY_ID=YOUR_RAZORPAY_KEY_ID
 RAZORPAY_SECRET=YOUR_RAZORPAY_SECRET
+```
+<br>
 
+## PROJECT STRUCTURE
+![Screenshot](https://drive.google.com/file/d/1Ig-g8c_-aiUjpRxJ8k6K_9FOPLgAum7F/view?usp=drive_link)
 
