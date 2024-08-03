@@ -1,36 +1,43 @@
-const { body, validationResult } = require('express-validator')
-const formidable =  require("formidable");
+const { body, validationResult } = require("express-validator");
+const apiResponse = require("../helpers/apiResponse");
 const _ = require("lodash");
-const { constants } = require('../constants');
-const Category = require('../models/category');
-const { deleteImagesFromS3 } = require('./common');
+const { constants } = require("../constants");
+const Category = require("../models/category");
+const { deleteImagesFromS3 } = require("./common");
 
 /**
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @description adds category
  */
-exports.addCategory = (req, res) => {
-    const {name, imageUrl} = req.body;
+exports.store = async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return apiResponse.validationErrorWithData(res, "Validation errors", errors.array());
+    }
+
+    const { name, imageUrl } = req.body;
 
     const newCategory = new Category(req.body);
 
-    Category.findOne({ name: name }).then((category) => {
-        if(category){
-            return res.status(400).json({
-                error: 'Category already exists'
-            })
+    try {
+        const isCategoryExists = await Category.findOne({ name: name })
+
+        if (isCategoryExists) {
+            return apiResponse.errorResponseWithCode(res, 400, "Category already exists");
         }
-        newCategory.save().then((category) => {
-            res.status(200).json({
-                data: category,
-                message: `Category created`
-            });
-        }).catch((error) => {
-            res.status(400).json(error)
-        })
-    })
-}
+
+        const category = await newCategory.save();
+        if (category) {
+            return apiResponse.successResponseWithData(res, "Category saved!", category)
+        }
+        return apiResponse.errorResponseWithCode(res, 400, "Something went wrong");
+    } catch (error) {
+        return apiResponse.ErrorResponse(res, error.toString());
+    }
+
+};
 
 /**
  * @param {Object} req - Express request object
@@ -41,18 +48,18 @@ exports.updateCategory = (req, res) => {
     const updatedData = req.body;
     const categoryId = req.params?.categoryId;
 
-    Category.updateOne({_id: categoryId}, { $set: updatedData }).then((category) => {
-        return res.status(200).json({  
+    Category.updateOne({ _id: categoryId }, { $set: updatedData }).then((category) => {
+        return res.status(200).json({
             data: category,
-            message: "Category updated"
+            message: "Category updated",
         })
     }).catch((error) => {
         return res.status(520).json({
             log: error,
-            error: "Unknown error"
+            error: "Unknown error",
         })
     })
-}
+};
 
 /**
  * @param {Object} req - Express request object
@@ -62,15 +69,15 @@ exports.updateCategory = (req, res) => {
  * @description gets particular category id
  */
 exports.getCategoryById = (req, res, next, id) => {
-    if(!id){
+    if (!id) {
         return res.status(502).json({
-            error: "Product id is required"
+            error: "Product id is required",
         })
     }
     Category.findById(id).then((category) => {
-        if(!category){
+        if (!category) {
             return res.status(400).json({
-                error: "Category doesn't exist"
+                error: "Category doesn't exist",
             })
         }
         req.category = category;
@@ -78,30 +85,24 @@ exports.getCategoryById = (req, res, next, id) => {
     }).catch((error) => {
         return res.status(502).json({
             log: error,
-            error: "Unknown error occoured"
+            error: "Unknown error occoured",
         })
     })
-}
+};
 
 /**
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @description retrives all the categories
  */
-exports.getCategories = (req, res) => {
-    Category.find().then((error, categories) => {
-        if(error) {
-            return res.status(502).json({
-                log: error,
-                error: "Unknown error"
-            })
-        }
-        return res.status(200).json({
-            data: categories,
-            message: "Categories retrieved"
-        })
-    })
-}
+exports.index = async (req, res) => {
+    try {
+        let categories = await Category.find();
+        return apiResponse.successResponseWithData(res, "Categories found", categories);
+    } catch (error) {
+        return apiResponse.ErrorResponse(res, error.toString());
+    }
+};
 
 /**
  * @param {Object} req - Express request object
@@ -110,17 +111,17 @@ exports.getCategories = (req, res) => {
  */
 exports.deleteCategory = (req, res) => {
     const categoryId = req.params.categoryId;
-    Category.findByIdAndDelete({_id: categoryId}).then((category) => {
-        const image = [ category.imageUrl ];
-        deleteImagesFromS3(image, constants.S3_BUCKETS.CATEGORIES).then((res) => {}).catch((err) => {})
+    Category.findByIdAndDelete({ _id: categoryId }).then((category) => {
+        const image = [category.imageUrl];
+        deleteImagesFromS3(image, constants.S3_BUCKETS.CATEGORIES).then((res) => { }).catch((err) => { });
         return res.status(200).json({
             data: category,
-            message: "Category has been deleted"
+            message: "Category has been deleted",
         })
     }).catch((error) => {
         return res.status(200).json({
             log: error,
-            error: "Unknown error"
+            error: "Unknown error",
         })
     })
-}
+};
