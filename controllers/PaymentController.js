@@ -3,8 +3,8 @@ const crypto = require("crypto");
 const Payment = require('../models/payment');
 const { getUserData } = require("../middlewares/user");
 const { ProductCart, Order } = require("../models/order");
-const { checkStock, subtractStock } = require("./product");
-const { clearCart } = require("./order");
+const { checkStock, subtractStock } = require("./ProductController");
+const { clearCart } = require("./OrderController");
 const { constants } = require("../constants");
 
 /**
@@ -49,7 +49,7 @@ exports.createOrder = async (req, res) => {
             key_secret: process.env.RAZORPAY_SECRET,
         });
 
-        const  amount = totalAmount;
+        const amount = totalAmount;
 
         const paymentPayload = {
             amount: amount

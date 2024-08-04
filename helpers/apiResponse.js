@@ -1,5 +1,5 @@
 exports.successResponse = function (res, msg) {
-  var data = {
+  const data = {
     status: 1,
     message: msg,
   };
@@ -7,7 +7,7 @@ exports.successResponse = function (res, msg) {
 };
 
 exports.successResponseWithData = function (res, msg, data) {
-  var resData = {
+  const resData = {
     status: 1,
     message: msg,
     data: data,
@@ -19,21 +19,21 @@ exports.HttpResponse = function (res, status, data) {
   return res.status(status).json(data);
 };
 exports.ErrorResponse = function (res, msg) {
-  var data = {
+  const data = {
     status: 0,
     message: msg,
   };
   return res.status(500).json(data);
 };
 exports.errorResponseWithCode = function (res, code, msg) {
-  var data = {
+  const data = {
     status: 0,
     message: msg,
   };
   return res.status(code).json(data);
 };
 exports.notFoundResponse = function (res, msg) {
-  var data = {
+  const data = {
     status: 0,
     message: msg,
   };
@@ -41,7 +41,7 @@ exports.notFoundResponse = function (res, msg) {
 };
 
 exports.validationErrorWithData = function (res, msg, errors) {
-  var resData = {
+  const resData = {
     status: 0,
     message: msg,
     errors: errors.map((err) => {
@@ -52,7 +52,7 @@ exports.validationErrorWithData = function (res, msg, errors) {
 };
 
 exports.unauthorizedResponse = function (res, msg) {
-  var data = {
+  const data = {
     status: 0,
     message: msg,
   };

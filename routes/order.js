@@ -1,8 +1,8 @@
 const express = require('express');
-const router =  express.Router();
+const router = express.Router();
 const { check } = require('express-validator');
 const { isSignedIn, isAuthenticated, isAdmin } = require('../middlewares/auth');
-const { addToCart, removeFromCart, getCartProducts, getOrdersOfUser, getAllOrders, updateOrder, cancelOrder, codOrder } = require('../controllers/order');
+const { addToCart, removeFromCart, getCartProducts, getOrdersOfUser, getAllOrders, updateOrder, cancelOrder, codOrder } = require('../controllers/OrderController');
 const { isProductExist } = require('../middlewares/product');
 const { isProductExistOnCart, getOrderId } = require('../middlewares/order');
 const { isBasicUserDetailExists } = require('../middlewares/user');
@@ -22,39 +22,39 @@ router.delete('/remove-from-cart/:cartProductId',
     removeFromCart
 )
 
-router.post('/cod-order', 
+router.post('/cod-order',
     isSignedIn,
     isBasicUserDetailExists,
     codOrder
 )
 
-router.get('/get-orders', 
+router.get('/get-orders',
     isSignedIn,
     getOrdersOfUser
 )
 
-router.get('/get-cart', 
+router.get('/get-cart',
     isSignedIn,
     getCartProducts
 )
 
-router.get('/get-all-orders', 
+router.get('/get-all-orders',
     isSignedIn,
     isAdmin,
     getAllOrders
 )
 
-router.post('/update-order/:orderId', 
+router.post('/update-order/:orderId',
     isSignedIn,
     isAdmin,
     getOrderId,
     updateOrder
 )
 
-router.post('/cancel-order/:orderId', 
+router.post('/cancel-order/:orderId',
     isSignedIn,
     cancelOrder
-    
+
 )
 
 module.exports = router;

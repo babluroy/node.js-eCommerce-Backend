@@ -3,7 +3,7 @@ const apiResponse = require("../helpers/apiResponse");
 const _ = require("lodash");
 const { constants } = require("../constants");
 const Category = require("../models/category");
-const { deleteImagesFromS3 } = require("./common");
+const { deleteImagesFromS3 } = require("./CommonController");
 
 /**
  * @param {Object} req - Express request object
