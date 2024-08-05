@@ -24,6 +24,7 @@
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "mongoose": "^8.5.0",
+    "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.4",
     "razorpay": "^2.9.4",
     "redis": "^4.6.15",

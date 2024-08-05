@@ -1,41 +1,35 @@
-const express = require('express')
-const app = express()
-const bodyparser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const cors = require('cors')
-const mongoose = require('mongoose')
+const express = require("express");
+const app = express();
+const bodyparser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const mongoose = require("mongoose");
 require("dotenv").config();
 
 // routes
-const auth = require('./routes/auth')
-const category = require('./routes/category')
-const common = require('./routes/common')
-const product = require('./routes/product')
-const order = require('./routes/order')
-const payment = require('./routes/payment')
+const apiRoutes = require("./routes/api");
+const multer = require("multer");
 
 // DB CONNECTION
-mongoose.connect(process.env.DATABASE, {
-}).then(()=>{
-    console.log("DB CONNECTED")
-}).catch((err) => {
-    console.log(err)
-})
+mongoose
+    .connect(process.env.DATABASE, {})
+    .then(() => {
+        console.log("DB CONNECTED");
+    })
+    .catch((err) => {
+        console.log(err);
+    });
 
-app.use(cookieParser())
-app.use(bodyparser.json())
-app.use(cors())
+app.use(cookieParser());
+app.use(express.json());
+app.use(multer().array()) //For form-data 
+app.use(cors());
 
-// routes
-app.use('/api/auth', auth);
-app.use('/api/category', category);
-app.use('/api/common', common);
-app.use('/api/product', product);
-app.use('/api/order', order);
-app.use('/api/payment', payment);
+app.use("/api/", apiRoutes);
 
-const port = process.env.PORT || 2000;
+const port = process.env.SERVER_PORT || 8000;
+const host = process.env.SERVER_HOST || localhost;
 
-app.listen(port, () => {
-    console.log('Server is running at port ', port)
-})
+app.listen(port, host, () => {
+    console.log(`Server started http://${host}:${port}`);
+});
