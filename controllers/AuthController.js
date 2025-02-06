@@ -193,13 +193,15 @@ exports.updateUser = (req, res) => {
  * @description retrives user data
  */
 exports.getUser = (req, res) => {
-    const userData = getUserData(req.headers.authorization);
-
-    if (!userData) {
-        return res.status(502).json({
-            error: "Error retrieving user details"
+    const userId = req.params.userId;
+    User.findById(userId)
+        .then(user => {
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            return res.status(200).json({ data: user });
         })
-    }
-    
-    return res.status(200).json({ data: userData });
+        .catch(err => {
+            return res.status(500).json({ log: err, error: 'Internal server error' });
+        });
 }
