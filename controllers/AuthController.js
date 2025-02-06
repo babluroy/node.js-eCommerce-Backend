@@ -201,5 +201,5 @@ exports.getUser = (req, res) => {
         })
     }
     
-    return userData;
+    return res.status(200).json({ data: userData });
 }
