@@ -29,7 +29,7 @@ router.get('/signout', signout);
 
 router.post('/update-user/:userId', updateUser);
 
-router.get('/user', getUser);
+router.get('/user/:userId', getUser);
 
 router.post('/test', isSignedIn, isAdmin, isAuthenticated, (req, res) => {
     res.status(200).json({ msg: 'test' })
