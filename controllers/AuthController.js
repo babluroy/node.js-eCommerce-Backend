@@ -187,7 +187,11 @@ exports.updateUser = (req, res) => {
 
 }
 
-
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description retrives user data
+ */
 exports.getUser = (req, res) => {
     const userData = getUserData(req.headers.authorization);
 
