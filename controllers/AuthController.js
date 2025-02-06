@@ -209,7 +209,7 @@ exports.getUser = async(req, res) => {
             delete user.address._id;
         }
 
-        return res.status(200).json({ user });
+        return res.status(200).json({ data: user });
     } catch (err) {
         return res.status(500).json({ log: err, error: 'Internal server error' });
     }
