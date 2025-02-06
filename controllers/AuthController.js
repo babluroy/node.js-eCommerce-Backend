@@ -194,14 +194,16 @@ exports.updateUser = (req, res) => {
  */
 exports.getUser = (req, res) => {
     const userId = req.params.userId;
+
     User.findById(userId)
+        .select('-password -_id -createdAt -updatedAt') // Exclude sensitive fields
         .then(user => {
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
-            return res.status(200).json({ data: user });
+            return res.status(200).json({ user });
         })
         .catch(err => {
-            return res.status(500).json({ log: err, error: 'Internal server error' });
+           return res.status(500).json({ log: err, error: 'Internal server error' });
         });
 }
