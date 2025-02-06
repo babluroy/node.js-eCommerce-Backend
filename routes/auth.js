@@ -11,7 +11,7 @@ router.post('/signup',
     [
         check("email", "E-mail is required").isEmail(),
         check("password", "Password is required"),
-        check("password", "Password should be atleast 6 characters").isLength({ min: 6}),
+        check("password", "Password should be atleast 6 characters").isLength({ min: 6 }),
     ],
     signup
 )
@@ -20,7 +20,7 @@ router.post('/signin',
     [
         check("email", "E-mail is required").isEmail(),
         check("password", "Password is required"),
-        check("password", "Password should be atleast 6 characters").isLength({ min: 6}),
+        check("password", "Password should be atleast 6 characters").isLength({ min: 6 }),
     ],
     signin
 )
@@ -32,7 +32,7 @@ router.post('/update-user/:userId', updateUser);
 router.get('/user', getUser);
 
 router.post('/test', isSignedIn, isAdmin, isAuthenticated, (req, res) => {
-    res.status(200).json({msg: 'test'})
+    res.status(200).json({ msg: 'test' })
 })
 
 module.exports = router;

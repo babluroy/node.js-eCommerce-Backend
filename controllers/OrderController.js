@@ -1,7 +1,7 @@
 const { constants } = require("../constants");
 const { getUserData } = require("../middlewares/user");
 const { ProductCart, Order } = require("../models/order");
-const { checkStock, subtractStock } = require("./product");
+const { checkStock, subtractStock } = require("./ProductController");
 
 /**
  * @param {Object} req - Express request object
@@ -35,7 +35,7 @@ exports.addToCart = (req, res) => {
     };
 
     const cartData = new ProductCart(preparedData)
-    
+
     cartData.save().then((addedProduct) => {
         return res.status(200).json({
             data: addedProduct,
@@ -108,7 +108,7 @@ exports.getOrdersOfUser = async (req, res) => {
     sortBy = sortBy ? sortBy : "_id";
 
     try {
-        const products = await Order.find({user: userData.id})
+        const products = await Order.find({ user: userData.id })
             .sort([[sortBy, "desc"]])
             .skip(skip)
             .limit(limit_query)
@@ -223,15 +223,15 @@ exports.getAllOrders = async (req, res) => {
  * @param {Object} res - Express response object
  * @description updates order details for admin
  */
-exports.updateOrder  = async (req, res) => {
+exports.updateOrder = async (req, res) => {
     const updatedData = req.body;
     const orderId = req.params.orderId
 
     try {
         const order = await Order.findOneAndUpdate(
-            {_id: orderId},
-            {$set: updatedData},
-            {new: true, useFindAndModify: false }
+            { _id: orderId },
+            { $set: updatedData },
+            { new: true, useFindAndModify: false }
         )
         res.status(200).json({
             data: order,

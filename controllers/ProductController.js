@@ -1,9 +1,9 @@
 const { body, validationResult } = require('express-validator')
-const formidable =  require("formidable");
+const formidable = require("formidable");
 const _ = require("lodash");
 const { constants } = require('../constants');
 const Product = require('../models/product');
-const { deleteImagesFromS3 } = require('./common');
+const { deleteImagesFromS3 } = require('./CommonController');
 
 /**
  * @param {Object} req - Express request object
@@ -11,7 +11,7 @@ const { deleteImagesFromS3 } = require('./common');
  * @description adds product
  */
 exports.addProduct = (req, res) => {
-    const {title, summary, desc, images, quantity, featured, category, sizes} = req.body;
+    const { title, summary, desc, images, quantity, featured, category, sizes } = req.body;
 
     const product = new Product(req.body);
 
@@ -37,8 +37,8 @@ exports.updateProduct = (req, res) => {
     const updatedData = req.body;
     const productId = req.params?.productId;
 
-    Product.updateOne({_id: productId}, {$set: updatedData}).then((product) => {
-        return res.status(200).json({  
+    Product.updateOne({ _id: productId }, { $set: updatedData }).then((product) => {
+        return res.status(200).json({
             data: product,
             message: "Product updated"
         })
@@ -57,9 +57,9 @@ exports.updateProduct = (req, res) => {
  */
 exports.deleteProduct = (req, res) => {
     const productId = req.params?.productId;
-    Product.findByIdAndDelete({_id: productId}).then((product) => {
-        deleteImagesFromS3(product?.images, constants.S3_BUCKETS.PRODUCTS).then((res) => {}).catch((err) => {})
-        return res.status(200).json({  
+    Product.findByIdAndDelete({ _id: productId }).then((product) => {
+        deleteImagesFromS3(product?.images, constants.S3_BUCKETS.PRODUCTS).then((res) => { }).catch((err) => { })
+        return res.status(200).json({
             data: product,
             message: "Product Deleted"
         })
@@ -81,7 +81,7 @@ exports.deleteProduct = (req, res) => {
  */
 exports.getProductId = (req, res, next, id) => {
     Product.findById(id).then((product) => {
-        if(!product){
+        if (!product) {
             return res.status(400).json({
                 error: "Product doesn't exist"
             })
@@ -154,12 +154,12 @@ exports.getAllProducts = async (req, res) => {
 exports.getProduct = (req, res) => {
     const productId = req.params?.productId;
     Product.findById(productId).then((product) => {
-        if(!product){
+        if (!product) {
             return res.status(400).json({
                 error: "Product doesn't exist"
             })
         }
-        return res.status(200).json({  
+        return res.status(200).json({
             data: product,
             message: "Product Retrived"
         })
@@ -208,6 +208,6 @@ exports.subtractStock = async (productIds, quantities) => {
         const result = await Product.bulkWrite(updateOperations);
         return result;
     } catch (err) {
-       return false;
+        return false;
     }
 };

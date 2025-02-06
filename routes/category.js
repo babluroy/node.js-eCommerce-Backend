@@ -1,38 +1,19 @@
-const express = require('express');
-const router =  express.Router();
-const { check } = require('express-validator');
-const { addCategory, getCategoryById, updateCategory, getCategories, deleteCategory } = require('../controllers/category');
-const { isSignedIn, isAuthenticated, isAdmin } = require('../middlewares/auth');
+const express = require("express");
+const router = express.Router();
+const { check } = require("express-validator");
+const { store, getCategoryById, updateCategory, index, deleteCategory } = require("../controllers/CategoryController");
+const { isSignedIn, isAuthenticated, isAdmin } = require("../middlewares/auth");
 
-router.param("categoryId", getCategoryById)
+const { CreateCategoryRequestValidation } = require("../validators/CategoryRouteValidations");
 
-router.post('/add-category',
-    [
-        check("name", "name is required"),
-        check("imageUrl", "Image is required"),
-    ],
-    isSignedIn, 
-    isAdmin,
-    addCategory
-)
+router.param("categoryId", getCategoryById);
 
-router.post('/update-category/:categoryId',
-    isSignedIn, 
-    isAdmin,
-    getCategoryById,
-    updateCategory
-)
+router.post("/", [CreateCategoryRequestValidation()], isSignedIn, isAdmin, store);
 
-router.get('/get-categories',
-    isSignedIn,
-    getCategories
-)
+router.post("/update-category/:categoryId", isSignedIn, isAdmin, getCategoryById, updateCategory);
 
-router.delete('/delete-category/:categoryId',
-    isSignedIn,
-    isAdmin,
-    deleteCategory
-)
+router.get("/", isSignedIn, index);
 
+router.delete("/:categoryId", isSignedIn, isAdmin, deleteCategory);
 
 module.exports = router;
