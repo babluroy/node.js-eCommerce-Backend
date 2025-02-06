@@ -28,7 +28,7 @@ app.use(cors());
 app.use("/api/", apiRoutes);
 
 const port = process.env.SERVER_PORT || 8000;
-const host = process.env.SERVER_HOST || localhost;
+const host = process.env.SERVER_HOST || 'localhost';
 
 app.listen(port, host, () => {
     console.log(`Server started http://${host}:${port}`);
