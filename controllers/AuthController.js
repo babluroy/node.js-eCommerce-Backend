@@ -197,7 +197,7 @@ exports.getUser = async(req, res) => {
         const userId = req.params.userId;
 
         const user = await User.findById(userId)
-            .select('-password -_id -createdAt -updatedAt -__v') // Exclude sensitive fields
+            .select('-password -_id -createdAt -email -updatedAt -__v') // Exclude sensitive fields
             .lean(); 
 
         if (!user) {
