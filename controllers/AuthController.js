@@ -192,18 +192,25 @@ exports.updateUser = (req, res) => {
  * @param {Object} res - Express response object
  * @description retrives user data
  */
-exports.getUser = (req, res) => {
-    const userId = req.params.userId;
+exports.getUser = async(req, res) => {
+    try {
+        const userId = req.params.userId;
 
-    User.findById(userId)
-        .select('-password -_id -createdAt -updatedAt') // Exclude sensitive fields
-        .then(user => {
-            if (!user) {
-                return res.status(404).json({ error: 'User not found' });
-            }
-            return res.status(200).json({ user });
-        })
-        .catch(err => {
-           return res.status(500).json({ log: err, error: 'Internal server error' });
-        });
+        const user = await User.findById(userId)
+            .select('-password -_id -createdAt -updatedAt -__v') // Exclude sensitive fields
+            .lean(); 
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Remove _id from nested fields like address if it exists
+        if (user.address && user.address._id) {
+            delete user.address._id;
+        }
+
+        return res.status(200).json({ user });
+    } catch (err) {
+        return res.status(500).json({ log: err, error: 'Internal server error' });
+    }
 }
