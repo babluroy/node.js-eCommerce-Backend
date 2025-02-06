@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator')
-const { signup, signin, signout, updateUser } = require('../controllers/auth');
+const { signup, signin, signout, updateUser, getUser } = require('../controllers/auth');
 const { isAuthenticated, isSignedIn, isAdmin } = require('../middlewares/auth');
 const { getUserById } = require('../middlewares/user');
 
@@ -28,6 +28,8 @@ router.post('/signin',
 router.get('/signout', signout);
 
 router.post('/update-user/:userId', updateUser);
+
+router.get('/user', getUser);
 
 router.post('/test', isSignedIn, isAdmin, isAuthenticated, (req, res) => {
     res.status(200).json({msg: 'test'})

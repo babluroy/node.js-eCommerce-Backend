@@ -186,3 +186,16 @@ exports.updateUser = (req, res) => {
     });
 
 }
+
+
+exports.getUser = (req, res) => {
+    const userData = getUserData(req.headers.authorization);
+
+    if (!userData) {
+        res.status(502).json({
+            error: "Error retrieving user details"
+        })
+    }
+    
+    return userData;
+}
