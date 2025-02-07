@@ -18,7 +18,7 @@ router.post('/add-category',
     ],
     isSignedIn, 
     isAdmin,
-    addCategory
+    store
 )
 
 router.post("/update-category/:categoryId", isSignedIn, isAdmin, getCategoryById, updateCategory);
