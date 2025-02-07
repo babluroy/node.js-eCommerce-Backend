@@ -10,6 +10,17 @@ router.param("categoryId", getCategoryById);
 
 router.post("/", [CreateCategoryRequestValidation()], isSignedIn, isAdmin, store);
 
+// old
+router.post('/add-category',
+    [
+        check("name", "name is required"),
+        check("imageUrl", "Image is required"),
+    ],
+    isSignedIn, 
+    isAdmin,
+    addCategory
+)
+
 router.post("/update-category/:categoryId", isSignedIn, isAdmin, getCategoryById, updateCategory);
 
 router.get("/", isSignedIn, index);
