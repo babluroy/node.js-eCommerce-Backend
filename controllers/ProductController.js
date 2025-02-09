@@ -138,13 +138,20 @@ exports.getAllProducts = async (req, res) => {
             .limit(limit_query)
             .exec();
 
-        res.status(200).json(products);
+        const totalProducts = await Product.countDocuments(query);
+        const hasNextPage = skip + products.length < totalProducts;
+
+        res.status(200).json({
+            products,
+            hasNextPage
+        });
     } catch (err) {
         res.status(400).json({
             error: "Products not found"
         });
     }
 };
+
 
 /**
  * @param {Object} req - Express request object
