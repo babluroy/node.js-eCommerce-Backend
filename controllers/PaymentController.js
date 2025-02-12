@@ -30,7 +30,7 @@ exports.createOrder = async (req, res) => {
     }
 
     const totalProductAmount = cartProducts.reduce((sum, item) => sum + item.amount, 0);
-    const totalAmount = totalProductAmount + constants.EXTRA_CHARGES.DELIVERY;
+    const totalAmount = totalProductAmount;
 
     const productIds = cartProducts.map(item => item.product);
     const productQtys = cartProducts.map(item => item.quantity);
