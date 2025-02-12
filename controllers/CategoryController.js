@@ -71,7 +71,7 @@ exports.updateCategory = (req, res) => {
 exports.getCategoryById = (req, res, next, id) => {
     if (!id) {
         return res.status(502).json({
-            error: "Product id is required",
+            error: "Category id is required",
         })
     }
     Category.findById(id).then((category) => {
