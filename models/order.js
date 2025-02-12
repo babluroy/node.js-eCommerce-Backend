@@ -19,7 +19,24 @@ const ProductCartSchema = new mongoose.Schema({
     amount: {
         type: Number,
         required: true,
-    }
+    },
+    size: {
+        type: String,
+        required: false,
+    },
+    summary: {
+        type: String,
+        required: true,
+    },
+    title: {
+        type: String,
+        required: true,
+    },
+    image: {
+        type: String,
+        required: true,
+    },
+
   },{timestamps: true});
 
 const ProductCart = mongoose.model("ProductCart", ProductCartSchema);

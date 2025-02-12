@@ -26,11 +26,14 @@ exports.addToCart = (req, res) => {
     }
 
     const getProductDetail = product.sizes.find(item => item.name == size);
-
     const preparedData = {
         product: productId,
         quantity: quantity,
         user: userData?.id,
+        size: size,
+        summary: product?.summary,
+        title: product?.title,
+        image: product?.images[0],
         amount: getProductDetail?.price * quantity,
     };
 
@@ -84,9 +87,9 @@ exports.getCartProducts = async (req, res) => {
             .skip(skip)
             .limit(limit_query)
             .exec();
-        res.status(200).json(cart);
+        return res.status(200).json(cart);
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             log: err,
             error: "Cart not found"
         });
@@ -131,7 +134,7 @@ exports.codOrder = async (req, res) => {
         const userData = getUserData(req.headers.authorization);
 
         const cartProducts = await ProductCart.find({ user: userData.id });
-
+        console.log(cartProducts)
         if (cartProducts.length === 0) {
             return res.status(404).json({
                 error: "No products found in cart"
