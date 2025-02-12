@@ -150,3 +150,36 @@ exports.validatePayment = async (req, res) => {
     });
 
 }
+
+
+/**
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @description validate transaction
+ */
+exports.testValiDatePayment = async (req, res) => {
+    const userData = getUserData(req.headers.authorization);
+    
+    const cartProducts = await ProductCart.find({ user: userData.id });
+
+    const preparedData = {
+        products: cartProducts,
+        paymentMode: constants.PAYMENT_TYPES.ONLINE,
+        user: userData.id,
+    };
+
+    const orderData = new Order(preparedData);
+    const savedOrder = await orderData.save();
+
+    const productIds = cartProducts.map(item => item.product);
+    const productQtys = cartProducts.map(item => item.quantity);
+
+    await subtractStock(productIds, productQtys);
+    await clearCart(userData.id);
+
+    return res.status(200).json({
+        data: savedOrder,
+        message: "Payment has been verified"
+    });
+
+}
