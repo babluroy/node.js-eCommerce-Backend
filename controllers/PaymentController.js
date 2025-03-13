@@ -6,6 +6,11 @@ const { ProductCart, Order } = require("../models/order");
 const { checkStock, subtractStock } = require("./ProductController");
 const { clearCart } = require("./OrderController");
 const { constants } = require("../constants");
+const AWS = require('aws-sdk');
+const { v4: uuidv4 } = require("uuid");
+AWS.config.update({ accessKeyId: process.env.AWS_ACCESS_KEY, secretAccessKey: process.env.AWS_SECRET_KEY, region: process.env.AWS_REGION_NAME });
+const sqs = new AWS.SQS();
+const QUEUE_URL = process.env.ORDER_PROCESSING;
 
 /**
  * @param {Object} req - Express request object
@@ -128,27 +133,29 @@ exports.validatePayment = async (req, res) => {
     } catch (err) { }
 
     const cartProducts = await ProductCart.find({ user: userData.id });
+    const orderId = uuidv4();
 
     const preparedData = {
+        orderId,
         products: cartProducts,
         paymentMode: constants.PAYMENT_TYPES.ONLINE,
         user: userData.id,
     };
 
-    const orderData = new Order(preparedData);
-    const savedOrder = await orderData.save();
-
-    const productIds = cartProducts.map(item => item.product);
-    const productQtys = cartProducts.map(item => item.quantity);
-
-    await subtractStock(productIds, productQtys);
+    const orderData = new Order({ ...preparedData, status: "Pending" });
+    await orderData.save();
     await clearCart(userData.id);
 
-    return res.status(200).json({
-        data: savedOrder,
-        message: "Payment has been verified"
-    });
+    // Send message to SQS
+    await sqs.sendMessage({
+        QueueUrl: QUEUE_URL,
+        MessageBody: JSON.stringify(preparedData),
+    }).promise();
 
+    return res.status(200).json({
+        message: "Order is being processed",
+        orderId,
+    });
 }
 
 
@@ -161,25 +168,29 @@ exports.testValiDatePayment = async (req, res) => {
     const userData = getUserData(req.headers.authorization);
     
     const cartProducts = await ProductCart.find({ user: userData.id });
+    const orderId = uuidv4();
 
     const preparedData = {
+        orderId,
         products: cartProducts,
         paymentMode: constants.PAYMENT_TYPES.ONLINE,
         user: userData.id,
     };
 
-    const orderData = new Order(preparedData);
-    const savedOrder = await orderData.save();
-
-    const productIds = cartProducts.map(item => item.product);
-    const productQtys = cartProducts.map(item => item.quantity);
-
-    await subtractStock(productIds, productQtys);
+    const orderData = new Order({ ...preparedData, status: "Pending" });
+    await orderData.save();
     await clearCart(userData.id);
+    
+    // Send message to SQS
+    await sqs.sendMessage({
+        QueueUrl: QUEUE_URL,
+        MessageBody: JSON.stringify(preparedData),
+    }).promise();
 
     return res.status(200).json({
-        data: savedOrder,
-        message: "Payment has been verified"
+        message: "Order is being processed",
+        orderId,
     });
+    
 
 }
