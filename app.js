@@ -3,6 +3,7 @@ const app = express();
 const bodyparser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const {pollOrderQueue} = require("./workers/orderWorker")
 const mongoose = require("mongoose");
 require("dotenv").config();
 
@@ -24,6 +25,9 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(multer().array()) //For form-data 
 app.use(cors());
+// Start polling order SQS messages
+pollOrderQueue();
+
 
 app.use("/api/", apiRoutes);
 

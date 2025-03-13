@@ -190,6 +190,7 @@ exports.checkStock = (cartProducts, productQuantities) => {
             }
             resolve(true);
         }).catch((err) => {
+            console.log(err)
             reject(false);
         });
     });

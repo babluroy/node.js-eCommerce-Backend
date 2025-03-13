@@ -1,12 +1,12 @@
 # eCommerce Backend Server
 
-Welcome to the eCommerce Backend Server! This Node.js application serves as dynamic eCommerce platform. It features robust functionalities for managing products, orders, and user interactions.
+Welcome to the eCommerce Backend Server! This Node.js application serves as a dynamic eCommerce platform. It features robust functionalities for managing products, orders, and user interactions.
 
 ## 🚀 Features
 
 - **Product Management:** Create, read, update, and delete products.
 - **Dynamic Queries:** Search for products based on size, category, price, and featured status.
-- **Order Processing:** Handle shopping cart orders, check stock availability, and manage order statuses.
+- **Order Processing:** Handle shopping cart orders, check stock availability, manage order statuses, and process orders using AWS SQS.
 - **Image Storage:** Seamlessly store and manage product images using AWS S3.
 - **Payment Integration:** Secure and efficient payment processing with Razorpay.
 - **Secure & Scalable:** Built with MongoDB for a scalable database solution.
@@ -19,6 +19,7 @@ Welcome to the eCommerce Backend Server! This Node.js application serves as dyna
 - **Express.js:** Web application framework for Node.js.
 - **MongoDB:** NoSQL database for storing product and user data.
 - **AWS S3:** Cloud storage service for handling product images.
+- **AWS SQS:** Message queue service for handling order processing.
 - **Razorpay:** Payment gateway integration for processing transactions.
 
 <br>
@@ -28,12 +29,11 @@ Welcome to the eCommerce Backend Server! This Node.js application serves as dyna
 
 <br>
 
-
-## 📦 Installation
+## 🛆 Installation
 
 <br>
 
-1. **Create .env file and paste your DATABASE URL, SECRET, AWS CREDENTIALS & RAZORPAY CREDENTIALS:**
+1. **Create .env file and paste your DATABASE URL, SECRET, AWS CREDENTIALS, RAZORPAY CREDENTIALS & ORDER PROCESSING URL:**
 ```bash
 DATABASE=mongodb://localhost:27017/ecommerce
 SECRET=YOUT_SECRET
@@ -46,6 +46,9 @@ AWS_REGION=YOUR_AWS_REGION
 # RAZORPAY
 RAZORPAY_KEY_ID=YOUR_RAZORPAY_KEY_ID
 RAZORPAY_SECRET=YOUR_RAZORPAY_SECRET
+
+# ORDER PROCESSING
+ORDER_PROCESSING=YOUR_SQS_URL
 ```
 <br>
 

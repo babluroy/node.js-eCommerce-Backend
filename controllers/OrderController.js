@@ -1,7 +1,11 @@
 const { constants } = require("../constants");
 const { getUserData } = require("../middlewares/user");
 const { ProductCart, Order } = require("../models/order");
-const { checkStock, subtractStock } = require("./ProductController");
+const { v4: uuidv4 } = require("uuid");
+const AWS = require('aws-sdk');
+AWS.config.update({ accessKeyId: process.env.AWS_ACCESS_KEY, secretAccessKey: process.env.AWS_SECRET_KEY, region: process.env.AWS_REGION_NAME });
+const sqs = new AWS.SQS();
+const QUEUE_URL = process.env.ORDER_PROCESSING;
 
 /**
  * @param {Object} req - Express request object
@@ -134,39 +138,32 @@ exports.codOrder = async (req, res) => {
         const userData = getUserData(req.headers.authorization);
 
         const cartProducts = await ProductCart.find({ user: userData.id });
-        console.log(cartProducts)
         if (cartProducts.length === 0) {
             return res.status(404).json({
                 error: "No products found in cart"
             });
         }
 
-        const productIds = cartProducts.map(item => item.product);
-        const productQtys = cartProducts.map(item => item.quantity);
-
-        const isStockAvailable = await checkStock(productIds, productQtys);
-
-        if (!isStockAvailable) {
-            return res.status(400).json({
-                error: "Insufficient stock"
-            });
-        }
-
+        const orderId = uuidv4();
         const preparedData = {
+            orderId,
+            user: userData.id,
             products: cartProducts,
             paymentMode: constants.PAYMENT_TYPES.COD,
-            user: userData.id,
         };
 
-        const orderData = new Order(preparedData);
-        const savedOrder = await orderData.save();
+        const orderData = new Order({ ...preparedData, status: "Pending" });
+        await orderData.save();
 
-        await subtractStock(productIds, productQtys);
-        await this.clearCart(userData.id);
+        // Send message to SQS
+        await sqs.sendMessage({
+            QueueUrl: QUEUE_URL,
+            MessageBody: JSON.stringify(preparedData),
+        }).promise();
 
         return res.status(200).json({
-            data: savedOrder,
-            message: "Successfully Ordered"
+            message: "Order is being processed",
+            orderId,
         });
 
     } catch (err) {
@@ -182,6 +179,7 @@ exports.codOrder = async (req, res) => {
  * @description cleares the cart of user
  */
 exports.clearCart = (userId) => {
+    console.log(userId, 'this is clearcaet')
     if (!userId) {
         return false;
     }
@@ -190,6 +188,7 @@ exports.clearCart = (userId) => {
             return (true)
         })
         .catch((error) => {
+            console.log(error)
             return (false)
         });
 };
