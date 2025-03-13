@@ -3,7 +3,6 @@ const AWS = require('aws-sdk');
 AWS.config.update({ accessKeyId: process.env.AWS_ACCESS_KEY, secretAccessKey: process.env.AWS_SECRET_KEY, region: process.env.AWS_REGION_NAME });
 const { Order } = require("../models/order");
 const { checkStock, subtractStock } = require("../controllers/ProductController");
-const { clearCart } = require("../controllers/OrderController");
 const sqs = new AWS.SQS();
 const QUEUE_URL = process.env.ORDER_PROCESSING;
 
@@ -27,7 +26,6 @@ const processOrder = async (message) => {
     }
 
     // Subtract stock and confirm order
-    await clearCart(user);
     await subtractStock(productIds, productQtys);
     await Order.findOneAndUpdate({ orderId }, { status: "Processing" });
 

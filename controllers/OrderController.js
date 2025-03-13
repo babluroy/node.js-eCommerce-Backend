@@ -154,6 +154,7 @@ exports.codOrder = async (req, res) => {
 
         const orderData = new Order({ ...preparedData, status: "Pending" });
         await orderData.save();
+        await this.clearCart(userData.id);
 
         // Send message to SQS
         await sqs.sendMessage({
