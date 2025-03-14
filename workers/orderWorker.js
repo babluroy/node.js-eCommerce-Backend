@@ -18,17 +18,19 @@ const processOrder = async (message) => {
 
     // Check stock availability
     const isStockAvailable = await checkStock(productIds, productQtys);
-
+    console.log('ran')
+    console.log(orderId)
     if (!isStockAvailable) {
         await Order.findOneAndUpdate({ orderId }, { status: "Failed" });
-        console.log(`Order ${orderId} failed due to insufficient stock.`);
         return;
     }
-
     // Subtract stock and confirm order
     await subtractStock(productIds, productQtys);
-    await Order.findOneAndUpdate({ orderId }, { status: "Processing" });
-
+    const updatedOrder = await Order.findOneAndUpdate(
+        { orderId: orderId }, 
+        { status: "Processing" }, 
+        { new: true }
+    );
     console.log(`Order ${orderId} successfully processed.`);
 }
 

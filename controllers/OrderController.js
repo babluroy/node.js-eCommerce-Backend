@@ -157,6 +157,7 @@ exports.codOrder = async (req, res) => {
         await this.clearCart(userData.id);
 
         // Send message to SQS
+        console.log('send message')
         await sqs.sendMessage({
             QueueUrl: QUEUE_URL,
             MessageBody: JSON.stringify(preparedData),
@@ -180,7 +181,6 @@ exports.codOrder = async (req, res) => {
  * @description cleares the cart of user
  */
 exports.clearCart = (userId) => {
-    console.log(userId, 'this is clearcaet')
     if (!userId) {
         return false;
     }
