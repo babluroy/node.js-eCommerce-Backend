@@ -18,8 +18,6 @@ const processOrder = async (message) => {
 
     // Check stock availability
     const isStockAvailable = await checkStock(productIds, productQtys);
-    console.log('ran')
-    console.log(orderId)
     if (!isStockAvailable) {
         await Order.findOneAndUpdate({ orderId }, { status: "Failed" });
         return;
