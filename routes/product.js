@@ -22,8 +22,8 @@ router.post('/update-product/:productId', isSignedIn, isAdmin, getProductId, upd
 
 router.delete('/delete-product/:productId', isSignedIn, isAdmin, getProductId, deleteProduct)
 
-router.get('/get-products', isSignedIn, getAllProducts)
+router.get('/get-products', getAllProducts)
 
-router.get('/get-product/:productId', isSignedIn, getProductId, getProduct)
+router.get('/get-product/:productId', getProductId, getProduct)
 
 module.exports = router;

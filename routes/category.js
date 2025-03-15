@@ -23,7 +23,7 @@ router.post('/add-category',
 
 router.post("/update-category/:categoryId", isSignedIn, isAdmin, getCategoryById, updateCategory);
 
-router.get("/", isSignedIn, index);
+router.get("/", index);
 
 router.delete("/:categoryId", isSignedIn, isAdmin, deleteCategory);
 
